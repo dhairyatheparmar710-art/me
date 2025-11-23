@@ -1,30 +1,24 @@
 workflows:
-  android-workflow:
+  android:
     name: Android Build
-    max_build_duration: 60
+    max_build_duration: 30
     environment:
+      groups:
+        - android_credentials
       vars:
-        UNITY_VERSION: "2021.3.0f1"
-      unity:
-        version: "2021.3.0f1"
+        PACKAGE_NAME: "com.dhairya.robotgame"
+      flutter: stable
     scripts:
-      - name: Install dependencies
-        script: |
-          echo "Dependencies installed automatically by Codemagic"
+      - name: Get Flutter packages
+        script: flutter pub get
 
-      - name: Activate Unity
-        script: |
-          unity-editor --version $UNITY_VERSION -quit -batchmode -nographics -logFile -
-
-      - name: Build Android
-        script: |
-          unity-editor \
-            -projectPath . \
-            -quit -batchmode -nographics \
-            -buildTarget Android \
-            -customBuildTarget Android \
-            -customBuildName "LastSpark" \
-            -executeMethod BuildScript.BuildAndroid
+      - name: Build APK
+        script: flutter build apk --release
 
     artifacts:
-      - build/**/*.apk
+      - build/app/outputs/flutter-apk/app-release.apk
+
+    publishing:
+      email:
+        recipients:
+          - "your-email@example.com"
