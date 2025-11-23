@@ -1,24 +1,15 @@
 workflows:
-  android:
-    name: Android Build
-    max_build_duration: 30
+  android-build:
+    name: Build Android APK
+    max_build_duration: 60
     environment:
-      groups:
-        - android_credentials
-      vars:
-        PACKAGE_NAME: "com.dhairya.robotgame"
-      flutter: stable
+      java: 17
     scripts:
-      - name: Get Flutter packages
-        script: flutter pub get
+      - name: Clean project
+        script: ./gradlew clean
 
-      - name: Build APK
-        script: flutter build apk --release
+      - name: Build release APK
+        script: ./gradlew assembleRelease
 
     artifacts:
-      - build/app/outputs/flutter-apk/app-release.apk
-
-    publishing:
-      email:
-        recipients:
-          - "your-email@example.com"
+      - app/build/outputs/**/*.apk
